@@ -10,12 +10,12 @@ import { CartItems } from '../components/cart-items/cart-items';
 // - avoir une seul instance qui partage une liste de produit de cart item ou autre qui partage des données
 // - avoir de la logique métier ou/et des appel API
 // notre service garde un état cohérent de notre panier en + de partager l'état du panier à tout les composant
-export class PanierService {
+export class CartService {
   // notre service gère sont état de sortre a ce qu'il reste cohérent
  private _cartItems = signal<cartItemModel[]>([])
  cartItems = this._cartItems.asReadonly()
 
- ajouter(cartItem : cartItemModel) {
+ add(cartItem : cartItemModel) {
   if(this.IsAlreadyInCart(cartItem) ) {
     this._cartItems.update((list) => list.map((ct) =>
     ct.product.id === cartItem.product.id
@@ -27,6 +27,14 @@ export class PanierService {
   this._cartItems.update((list) => [...list, cartItem])
  }
 
+
+ remove(productId : number) {
+  this._cartItems.update((list) => list.filter((ct) => ct.product.id !== productId))
+ }
+
+ clear() {
+  this._cartItems.set([])
+ }
 
  private IsAlreadyInCart(cartItem : cartItemModel) {
   let productsFind : cartItemModel[] = this._cartItems().filter(ct =>

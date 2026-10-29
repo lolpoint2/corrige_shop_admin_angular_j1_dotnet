@@ -2,31 +2,33 @@
   <h2>Panier</h2>
 </header>
 
+@if (cart().length > 0) {
+  <table border="3px">
+    <thead>
+      <td>Nom produit</td>
+      <td>Prix</td>
+      <td>Quantité</td>
+      <td>Sous-total HTVA</td>
+      <td></td>
+    </thead>
+    <tbody>
+      @for (item of cart(); track item.product.id) {
+        <tr>
+          <app-cart-items [ligneItemCart]="item"/>
+          <td><button (click)="cartService.remove(item.product.id)">Supprimer</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <br>
+  <button (click)="cartService.clear()">Vider le panier</button>
 
-<!--Transferr mon panier dans sa page à lui cart-page-->
-<!--Faire en sorte que quand je change de page via la sidebar mon panier ne revient pas a 0-->
-<!--Crée un service qui va partager l'état de mon panier-->
-<!--ng g service nomDeMonService-->
-<table border="3px">
-  <thead>
-    <td>Nom produit</td>
-    <td>Prix</td>
-    <td>Quantité</td>
-    <td>Sous-total HTVA</td>
-  </thead>
-  <tbody>
-    @for (item of cart(); track $index) {
-      <tr>
-         <app-cart-items [ligneItemCart]="item"/>
-      </tr>
-    }
-  </tbody>
-</table>
-<br>
-
-<article>
-  <h2>Bilan panier</h2>
-  <p>total HTVA : {{totalHTVA() | currency: 'EUR'}}</p>
-  <p>TVA : {{TVA() | currency: 'EUR'}} </p>
-  <p>total TTC : {{TotalTTC() | currency: 'EUR'}}</p>
-</article>
+  <article>
+    <h2>Bilan panier</h2>
+    <p>total HTVA : {{totalHTVA() | currency: 'EUR'}}</p>
+    <p>TVA : {{TVA() | currency: 'EUR'}} </p>
+    <p>total TTC : {{TotalTTC() | currency: 'EUR'}}</p>
+  </article>
+} @else {
+  <p>Votre panier est vide.</p>
+}

@@ -1,10 +1,11 @@
 import { Component, computed, inject, linkedSignal, signal, WritableSignal } from '@angular/core';
-import { Product, PRODUCTS } from '../../models/product';
+import { Product } from '../../models/product';
 import { ProductCard } from '../../components/product-card/product-card';
 import { cartItemModel } from '../../components/cart-items/cart-item.model';
 import { CartItems } from '../../components/cart-items/cart-items';
 import { CurrencyPipe } from '@angular/common';
-import { PanierService } from '../../services/panier.service';
+import { CartService } from '../../services/cart.service';
+import { ProductService } from '../../services/product.service';
 @Component({
   selector: 'app-catalogue-page',
   imports: [ProductCard],
@@ -14,22 +15,20 @@ import { PanierService } from '../../services/panier.service';
 
 export class CataloguePage {
 
-  panierService = inject(PanierService)
+  cartService = inject(CartService)
+  productService = inject(ProductService)
   // le stock est recalculé à partir du panier du service => il survit au changement de page
   // stock affiché = stock de base - quantité déjà dans le panier
-  products = computed<Product[]>(() => PRODUCTS.map(product => {
-    const quantiteDansPanier = this.panierService.cartItems()
+  products = computed<Product[]>(() => this.productService.products().map(product => {
+    const quantiteDansPanier = this.cartService.cartItems()
       .find(ct => ct.product.id === product.id)?.quantity ?? 0;
     return {...product, stock: product.stock - quantiteDansPanier};
   }))
-  cartCount = signal(0);
   categories = signal<string[]>(["Informatique", "Audio"])
 
 
   addToCart(event : {product: Product; quantity: number}) {
-    this.panierService.ajouter(event)
-
-    this.cartCount.update((c) => c + event.quantity);
+    this.cartService.add(event)
   }
 
   // LINKEDSIGNAL QUI PERMET de choisir notre categorie this.categoryChoice();

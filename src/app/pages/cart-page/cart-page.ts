@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CartItems } from '../../components/cart-items/cart-items';
-import { PanierService } from '../../services/panier.service';
+import { CartService } from '../../services/cart.service';
 import { cartItemModel } from '../../components/cart-items/cart-item.model';
 import { CurrencyPipe } from '@angular/common';
 
@@ -11,9 +11,9 @@ import { CurrencyPipe } from '@angular/common';
   templateUrl: './cart-page.html',
 })
 export class CartPage {
-  panierService = inject(PanierService)
+  cartService = inject(CartService)
   // on utilise directement le signal du service => si le panier change, la page se met à jour toute seule
-  cart = this.panierService.cartItems
+  cart = this.cartService.cartItems
   // reduce() parcourir un tableau et accumulé le résultat grâce au total :
   // TABLEAU :
   // ITEM 1 : produit : (Souris, 10€), quantity : 5
